@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function ajax(reqData){
+            return new Promise((resolve,reject)=>{
+                let xhr = new XMLHttpRequest();
+                if('get' == reqData.type){
+                    let str = "?";
+                    for (const key in reqData.data) {
+                       str +=`${key}=${reqData.data[key]}&`;
+                    }
+                    // reqData.url += str;
+                    xhr.open(reqData.type,reqData.url+str);
+                }
+                let fd = null;
+                if('post' == reqData.type){
+                    fd = new FormData();
+                    for (const key in reqData.data) {
+                       fd.append(key,reqData.data[key]);
+                    }
+                    xhr.open(reqData.type,reqData.url);  
+                }
+                xhr.send(fd);
+                xhr.onreadystatechange = function(){
+                    if(4 == this.readyState && 200 == this.status){
+                        resolve(JSON.parse(this.responseText));
+                    }
+                }
+            })
+        }
+    //     function ajax(reqData){
+    //         return new Promise( (resolve, reject)=>{
+    //         if('get' == reqData.type.toLowerCase()){
+    //             let str = '?'
+    //             for(const key in reqData.data){
+    //                 str += `${key}=${reqData.data[key]}&`
+    //             }
+    //             reqData.url += str
+    //         }
+    //         let fd = null
+    //         if('post' == reqData.type.toLowerCase()){
+    //             fd = new FormData()
+    //             for(const key in reqData.data){
+    //                 fd.append(key, reqData.data[key])
+    //             }
+    //         }
+    //         let xhl = new XMLHttpRequest()
+    //         xhl.open(reqData.type, reqData.url, true )
+    //         xhl.send(fd)
+    //         xhl.onreadystatechange = function(){
+    //         if(4 == this.readyState && 200 == this.status){
+    //             try {
+    //             resolve(JSON.parse( this.responseText ))
+    //             } catch (error) {
+    //             reject(new Error('数据解析失败'))
+    //             }
+    //         }
+    //         }
+    //     })
+    //     // return promise
+    // }
+        ajax({
+            type:'post',
+            url:'http://192.168.0.131/vueData/server2.php',
+            data:{
+                name:'typeGoods1',
+            }
+        }).then(res=>{
+            console.log(res);
+        })
+    </script>
+</body>
+</html>
